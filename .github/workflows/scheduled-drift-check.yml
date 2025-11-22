@@ -1,0 +1,56 @@
+name: "Drift Detection"
+
+run-name: >
+  ${{ github.event_name == 'workflow_dispatch' && 'Manual drift detection' || 'Scheduled drift detection' }}
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 7 * * *"
+
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+
+env:
+  AWS_PROFILE_TERRAFORM_STATE: "973963482762_TerraformStateAccess"
+
+jobs:
+  terraform-plan:
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./
+    environment: main-plan
+    timeout-minutes: 5
+    env:
+      AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME}}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      MENTIONS: "@murray-tait"
+    steps:
+      - name: Configure AWS credentials from AWS account
+        id: terraform-state-creds
+        uses: murray-tait/gha/.github/actions/configure-aws-credentials-file@main
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          aws-profile: 453254632971_AWSAdministratorAccess
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Plan for drift detection
+        id: terraform-plan
+        uses: murray-tait/gha/.github/actions/plan@main
+        with:
+          checkout-ref: refs/tags/deployment/main
+
+      - name: Publish drift detection
+        id: publish-drift
+        uses: murray-tait/gha/.github/actions/drift-detection@main
+        with:
+          mentions: ${{ env.MENTIONS }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          drift-detected: ${{ steps.terraform-plan.outputs.drift-detected }}
+          summary: ${{ steps.terraform-plan.outputs.summary }}
+          ops-info-discord-webhook: ${{ secrets.INFO_DISCORD_WEBHOOK }}
+          ops-alarms-discord-webhook: ${{ secrets.ALARMS_DISCORD_WEBHOOK }}
