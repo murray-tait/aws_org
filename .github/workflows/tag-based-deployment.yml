@@ -84,6 +84,14 @@ jobs:
           aws-profile: 973963482762_TerraformStateAccess
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Configure AWS credentials from AWS account
+        id: terraform-creds
+        uses: murray-tait/gha/.github/actions/configure-aws-credentials-file@main
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-profile: 453254632971_AWSAdministratorAccess
+          aws-region: ${{ vars.AWS_REGION }}
+
       - name: Plan for deployment
         id: terraform-plan
         uses: murray-tait/gha/.github/actions/plan@main
