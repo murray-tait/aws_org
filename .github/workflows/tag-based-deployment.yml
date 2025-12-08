@@ -75,12 +75,14 @@ jobs:
     env:
       AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME}}
       AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS-PROFILE: 453254632971_AWSAdministratorAccess
+
     steps:
       - name: Configure AWS credentials from AWS account
         id: terraform-state-creds
         uses: murray-tait/gha/.github/actions/configure-aws-credentials-file@main
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME_TERRAFORM_STATE }}
           aws-profile: 973963482762_TerraformStateAccess
           aws-region: ${{ vars.AWS_REGION }}
 
@@ -88,7 +90,7 @@ jobs:
         id: terraform-creds
         uses: murray-tait/gha/.github/actions/configure-aws-credentials-file@main
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME_TERRAFORM }}
           aws-profile: 453254632971_AWSAdministratorAccess
           aws-region: ${{ vars.AWS_REGION }}
 
@@ -101,7 +103,7 @@ jobs:
           upload-plan-file: true
           deployment_environment: ${{ vars.DEPLOYMENT_ENVIRONMENT }}
           deployment-discord-webhook: ${{ secrets.DEPLOYMENT_GITHUB_WEBHOOK }}
-          protected-deployment: ${{ vars.PROTECTED_DEPLOYMENT }}
+          protected-deployment: ${{ vars.PROTECTED_DEPLOYMENT }}          
 
   deploy:
     name: "Terraform Apply"
