@@ -34,9 +34,17 @@ jobs:
         id: terraform-state-creds
         uses: murray-tait/gha/.github/actions/configure-aws-credentials-file@main
         with:
-          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME_TERRAFORM_STATE }}
+          aws-profile: 973963482762_TerraformStateAccess
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Configure AWS credentials from AWS account
+        id: terraform-creds
+        uses: murray-tait/gha/.github/actions/configure-aws-credentials-file@main
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME_TERRAFORM }}
           aws-profile: 453254632971_AWSAdministratorAccess
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Plan for drift detection
         id: terraform-plan
