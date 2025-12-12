@@ -73,8 +73,6 @@ jobs:
     environment: main-plan
     timeout-minutes: 5
     env:
-      AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME}}
-      AWS_REGION: ${{ vars.AWS_REGION }}
       AWS-PROFILE: 453254632971_AWSAdministratorAccess
 
     steps:
