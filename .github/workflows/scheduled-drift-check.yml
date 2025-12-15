@@ -13,7 +13,7 @@ permissions:
   issues: write
 
 env:
-  AWS_PROFILE_TERRAFORM_STATE: "973963482762_TerraformStateAccess"
+  AWS_PROFILE: 453254632971_AWSAdministratorAccess
 
 jobs:
   terraform-plan:
