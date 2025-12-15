@@ -12,8 +12,6 @@ permissions:
   contents: read
   issues: write
 
-env:
-  AWS_PROFILE: 453254632971_AWSAdministratorAccess
 
 jobs:
   terraform-plan:
@@ -49,6 +47,8 @@ jobs:
       - name: Plan for drift detection
         id: terraform-plan
         uses: murray-tait/gha/.github/actions/plan@main
+        env:
+          AWS_PROFILE: 453254632971_AWSAdministratorAccess
         with:
           checkout-ref: refs/tags/deployment/main
 
